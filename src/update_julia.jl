@@ -75,25 +75,19 @@ run(`ln -s $(joinpath(JULIA_INST,JULIA_VER[1])) $(joinpath(JULIA_INST,"julia"))`
 
 # Precompile if specified
 if PRECOMPILE 
-	ans="Y" 
-else   
-	print("Precompile (Y/n)? : "); 
-	ans = readline(STDIN, chomp=true)
+	ans_precompile="Y" 
 end
-if (ans != "n") && (ans != "N")
+if (ans_precompile == "y") || (ans_precompile != "Y")
 	precompile_cmd = "include(\"/opt/julia/share/julia/build_sysimg.jl\");build_sysimg(default_sysimg_path(), \"native\", nothing;force=true);"
 	run(`$(joinpath(JULIA_INST,"julia/bin/julia")) -e $(precompile_cmd)`)
 end
 
 # Update packages if specified
 if UPDATE 
-	ans="Y"
-else
-	print("Run a Pkg.update() (Y/n)? : "); 
-	ans = readline(STDIN, chomp=true)
+	ans_update="Y"
 end
 
-if (ans != "n") && (ans != "N")
+if (ans_update == "y") || (ans_update == "Y")
 	pkgup_cmd = "Pkg.update()"
 	run(`$(joinpath(JULIA_INST,"julia/bin/julia")) -e $(pkgup_cmd)`)
 end
