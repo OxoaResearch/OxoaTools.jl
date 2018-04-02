@@ -74,20 +74,13 @@ JULIA_VER = open(readlines, pipeline(`ls /opt/. --sort=time`,`grep julia-`))
 run(`ln -s $(joinpath(JULIA_INST,JULIA_VER[1])) $(joinpath(JULIA_INST,"julia"))`)
 
 # Precompile if specified
-if PRECOMPILE 
-	ans_precompile="Y" 
-end
-if (ans_precompile == "y") || (ans_precompile != "Y")
+if PRECOMPILE
 	precompile_cmd = "include(\"/opt/julia/share/julia/build_sysimg.jl\");build_sysimg(default_sysimg_path(), \"native\", nothing;force=true);"
 	run(`$(joinpath(JULIA_INST,"julia/bin/julia")) -e $(precompile_cmd)`)
 end
 
 # Update packages if specified
-if UPDATE 
-	ans_update="Y"
-end
-
-if (ans_update == "y") || (ans_update == "Y")
+if UPDATE
 	pkgup_cmd = "Pkg.update()"
 	run(`$(joinpath(JULIA_INST,"julia/bin/julia")) -e $(pkgup_cmd)`)
 end
