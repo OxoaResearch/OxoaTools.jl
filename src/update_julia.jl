@@ -22,6 +22,7 @@ AUTHOR
 Written by Corneliu Cofaru, (c) 2018
 =#
 
+using Distributed
 
 @show nprocs()
 @show ARGS
@@ -36,7 +37,7 @@ if length(ARGS) >0
 	for (i, arg) in enumerate(ARGS)
 		arg == "--precompile" 	&& begin PRECOMPILE = true end
 		arg == "--update" 	&& begin UPDATE = true end
-		if contains(arg, "--dir=")
+		if occursin("--dir=", arg)
 			JULIA_INST = split(arg,"=")[2]
 			!ispath(JULIA_INST) && begin
 				println("Install path \"$JULIA_INST\" does not exist. Aborting...")
@@ -54,7 +55,7 @@ JULIA_DWL_FILE = "/tmp/julia_latest_tmp.tar.gz"				# save file
 # Clean /opt
 println("Pre-cleaning...")
 files_opt = open(readlines, `ls $JULIA_INST`)
-files_to_remove = files_opt[ find([contains(s,"julia-")||isequal(s, "julia") for s in files_opt]) ]
+files_to_remove = files_opt[ findall([occursin(r"julia-[0-9a-f]{10}", s)||isequal(s, "julia") for s in files_opt]) ]
 for fname in files_to_remove
 	println("\tdeleteing $(fname)...")
 	run(`rm -rf $(joinpath(JULIA_INST,fname))`)
