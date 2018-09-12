@@ -109,7 +109,7 @@ function colorscheme_wuye()
 	OhMyREPL.Passes.SyntaxHighlighter.op!(color_scheme, Crayons.Crayon(foreground = :51, bold=false))
 
 	# Macros 
-	OhMyREPL.Passes.SyntaxHighlighter.macro!(color_scheme, Crayons.Crayon(foreground = :128, bold=true))
+	OhMyREPL.Passes.SyntaxHighlighter.macro!(color_scheme, Crayons.Crayon(foreground = :163, bold=true))
 
 	# Comment
 	OhMyREPL.Passes.SyntaxHighlighter.comment!(color_scheme, Crayons.Crayon(foreground = :244, bold=false))
