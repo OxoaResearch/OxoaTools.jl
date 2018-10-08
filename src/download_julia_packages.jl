@@ -140,13 +140,14 @@ function main(ARGS::Vector{String})
 
     @info "Cloning repositories..."
     CONCURRENT = 8
-    asyncmap(PkgInfos[1:15], ntasks=CONCURRENT) do x
+    asyncmap(PkgInfos, ntasks=CONCURRENT) do x
         _git_clone(x[2], joinpath(DIR, x[1]))
     end
 
     if ARCHIVE
         @info "Compressing repositories"
-        run(pipeline(`tar czf ./all_julia_repositories.tar.gz $directory`, stdout=devnull))
+        run(pipeline(`tar czf ./all_julia_repositories.tar.gz $(joinpath(directory, "*"))`,
+                     stdout=devnull))
     end
 end
 
