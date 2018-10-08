@@ -24,9 +24,6 @@ Written by Corneliu Cofaru, (c) 2018
 
 using Distributed
 
-@show nprocs()
-@show ARGS
-
 # Keep track of input arguments
 JULIA_INST = "/opt"		# installation directory (has to exist)
 PRECOMPILE = false;		# pre-compilation flag 
@@ -46,7 +43,6 @@ if length(ARGS) >0
 		end
 	end
 end
-@show ARGS, JULIA_INST, PRECOMPILE, UPDATE
 
 # Initialize constants 
 JULIA_LINK = "https://julialangnightlies-s3.julialang.org/bin/linux/x64/julia-latest-linux64.tar.gz"	# download link

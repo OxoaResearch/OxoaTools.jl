@@ -1,5 +1,0 @@
-module OxoaTools
-
-# package code goes here
-
-end # module
