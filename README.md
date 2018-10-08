@@ -7,6 +7,7 @@
 
 
 A set of small tools used at Oxoa Research:
- - `REPL.jl` adds Julia REPL syntax colors (uses `OhMyREPL.jl`)
- - `update_julia.jl` updated Julia to the latest nightly development version. Supports specifying the installation folder and whether to precompile and update packages or not.
-
+ - `repl_colors.jl` adds Julia REPL syntax colors (uses `OhMyREPL.jl`)
+ - `update_julia.jl` script that updates Julia to the latest nightly development version. Supports specifying the installation folder and whether to precompile and update packages or not.
+ - `download_julia_packages.jl` script that downloads all registered Julia packages. Has an option to created an archive out of the lot.
+ - `patterns.jl` interesting code snippets.
