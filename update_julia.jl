@@ -32,7 +32,7 @@ UPDATE = false; 		# update flag
 # Parse arguments
 if length(ARGS) >0
 	for (i, arg) in enumerate(ARGS)
-		arg == "--precompile" 	&& begin PRECOMPILE = true end
+		arg == "--precompile" 	&& begin global PRECOMPILE = true end
 		arg == "--update" 	&& begin UPDATE = true end
 		if occursin("--dir=", arg)
 			JULIA_INST = split(arg,"=")[2]
@@ -72,7 +72,13 @@ run(`ln -s $(joinpath(JULIA_INST,JULIA_VER[1])) $(joinpath(JULIA_INST,"julia"))`
 
 # Precompile if specified
 if PRECOMPILE
-	precompile_cmd = "include(\"/opt/julia/share/julia/build_sysimg.jl\");build_sysimg(default_sysimg_path(), \"native\", nothing;force=true);"
+    BUILD_IMAGE_SCRIPT = "/opt/julia/share/julia/build_sysimg.jl"
+    new_script = replace(open(x->read(x, String), BUILD_IMAGE_SCRIPT),
+                         "info("=>"@info(")
+    open(x->write(x, new_script), BUILD_IMAGE_SCRIPT, "w")
+    precompile_cmd = "using Libdl;" *
+                     "include(\"$BUILD_IMAGE_SCRIPT\");"*
+                     "build_sysimg(default_sysimg_path(), \"native\", nothing;force=true);"
 	run(`$(joinpath(JULIA_INST,"julia/bin/julia")) -e $(precompile_cmd)`)
 end
 
