@@ -106,7 +106,10 @@ function main(ARGS::Vector{String})
     end
     
     function _git_clone(repo, path)
-        run(pipeline(`git clone $repo $path`, stdout=devnull))
+        try
+            run(pipeline(`git clone $repo $path`, stdout=devnull))
+        catch
+        end
     end
 
     PkgInfos = Vector{Tuple{String, String}}()
