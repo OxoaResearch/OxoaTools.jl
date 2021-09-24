@@ -140,10 +140,10 @@ function apply_colorscheme(cs)
 	OhMyREPL.Passes.BracketHighlighter.setcrayon!(c)
 
 	# Bracket autocompletion off
-	OhMyREPL.enable_autocomplete_brackets(true)
+	OhMyREPL.enable_autocomplete_brackets(false)
 
 	# Prompt
-	OhMyREPL.input_prompt!(">", :light_green)
+	OhMyREPL.input_prompt!("julia>", :light_green)
 	#OhMyREPL.output_prompt!("", :white)
 end
 
