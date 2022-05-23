@@ -56,7 +56,7 @@ function get_commandline_arguments(args::Vector{String})
             default = abspath(expanduser("~/.julia"))
         "--registry"
             help = "path to the 'Registry.toml' file"
-            default = abspath(expanduser("~/.julia/registries/General/Registry.toml"))
+            default = abspath(expanduser("~/.julia/registries/General.toml"))
     end	
     return parse_args(args,s)
 end
@@ -72,24 +72,23 @@ function main(ARGS::Vector{String})
 	ARCHIVE = args["archive"]
     JULIA_DIR = args["julia-dir"]
     REGISTRY = args["registry"]
+    ARFILE = "General.tar.gz"
 
     # Create installation path if it does not exist
     directory = abspath(DIR)
     !isdir(directory) && mkpath(directory)
 
     # Check the Julia directory for registries
-    pkg_reg_path = abspath(joinpath(JULIA_DIR, "registries", "General"))
+    pkg_reg_path = abspath(joinpath(JULIA_DIR, "registries"))
     !isdir(pkg_reg_path) && @error "$pkg_reg_path does not exist."
 
     # Get the Registry.toml path
-    registry_path = joinpath(pkg_reg_path, "Registry.toml")
-    if !isfile(registry_path)
-        @warn "Registry.toml not found in $JULIA_DIR."
-        if !isfile(REGISTRY)
-            @error "Registry.toml not found in $REGISTRY."
-        else
-            registry_path = abspath(REGISTRY)
-        end
+    registry_path = joinpath(pkg_reg_path, "_ex")
+    !isdir(registry_path) && mkpath(registry_path)
+    try
+        run(`tar zxvf $(joinpath(pkg_reg_path, ARFILE)) -C $registry_path`)
+    catch e
+        error("Could not extract Registry.toml: $e")
     end
 
     # Parse file and extract information in a Vector of tuples (package_name, path/to/Package.toml)  
@@ -113,13 +112,13 @@ function main(ARGS::Vector{String})
     end
 
     PkgInfos = Vector{Tuple{String, String}}()
-    open(registry_path, "r") do fid_registry
+    open(joinpath(registry_path, "Registry.toml"), "r") do fid_registry
         # Inside Registry.toml
         for line in eachline(fid_registry)
             if all(occursin(symbol,line) for symbol in ["{", "}", "="])
                 #00701ae9-d1dc-5365-b64a-a3a3ebf5695e = { name = "BioAlignments", path = "B/BioAlignments" }
                 name, regdir = _parse_registry_line(line)
-                open(joinpath(pkg_reg_path, regdir, "Package.toml"), "r") do fid_package
+                open(joinpath(registry_path, regdir, "Package.toml"), "r") do fid_package
                     # Inside Package.toml
                     for _line in eachline(fid_package)
                         key, val = strip.(split(_line, "="))
@@ -131,6 +130,9 @@ function main(ARGS::Vector{String})
             end
         end
     end
+
+    @info "Cleaning up $registry_path"
+    run(`rm -rf $registry_path`)
 
     @info "Cleaning up $directory ..."
     directories = readdir(directory)
