@@ -33,9 +33,9 @@ UPDATE = false; 		# update flag
 if length(ARGS) >0
 	for (i, arg) in enumerate(ARGS)
 		arg == "--precompile" 	&& begin global PRECOMPILE = true end
-		arg == "--update" 	&& begin UPDATE = true end
+		arg == "--update" 	&& begin (global UPDATE = true) end
 		if occursin("--dir=", arg)
-			JULIA_INST = split(arg,"=")[2]
+			global JULIA_INST = split(arg,"=")[2]
 			!ispath(JULIA_INST) && begin
 				println("Install path \"$JULIA_INST\" does not exist. Aborting...")
 				exit(-1)	
